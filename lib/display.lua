@@ -103,17 +103,18 @@ function notes_view:init(state, track_id, pattern_id)
     push_utils.clear_display(display.push)
     push_utils.text(display.push, "Notes for pattern: " .. self.pattern_id .. " on track " .. self.track_id, 1, 1)
     push_utils.clear_notes(display.push)
+    for i, step in ipairs(self.state:pattern(self.track_id, self.pattern_id).notes) do
+        if(step.type ~= "off") then
+          local x, y = push_utils.id_to_xy(i)
+          push_utils.lit(display.push, x, y, step.note)
+        end
+    end
     return self
 end
 
 function notes_view:on_click(display, event)
     if event.type == "note_on" then
-      for i, step in ipairs(self.state:pattern(self.track_id, self.pattern_id).notes) do
-        if(step.type ~= "off") then
-          local x, y = push_utils.id_to_xy(i)
-          push_utils.lit(display.push, x, y, step.note)
-        end
-      end
+
     end
 end
 
