@@ -1,4 +1,4 @@
-local utils = require("lib/utils")
+local utils = require("clippy/lib/utils")
 local state = {
     tracks = {},
     scale = nil,

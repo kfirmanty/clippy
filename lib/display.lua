@@ -1,8 +1,9 @@
-local push_utils = require("lib/push_utils")
+local push_utils = require("clippy/lib/push_utils")
 
 local display = {
     state = nil,
-    view = nil
+    view = nil,
+    push = nil
 }
 
 local tracks_view = {
@@ -35,10 +36,17 @@ end
 function display:init(state)
     self.state = state
     self:set_tracks_view()
+    self.push = push_utils.connect()
 end
 
-function display:on_click(event)
+function display:on_click(m)
+    local event = midi.to_msg(m)
+    print("recv midi event " .. event.type)
     self.view:on_click(display, event)
+end
+
+function display:text(text)
+
 end
 
 function tracks_view:init(state)
