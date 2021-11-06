@@ -1,4 +1,4 @@
-local push_utils = require("clippy/lib/push_utils")
+local push_utils = include("clippy/lib/push_utils")
 
 local display = {
     state = nil,
@@ -35,36 +35,40 @@ end
 
 function display:init(state)
     self.state = state
-    self:set_tracks_view()
     self.push = push_utils.connect()
     push_utils.init_user_mode(self.push)
-    push_utils.clear_display(self.push)
-    push_utils.text(self.push, "Hello from Norns!", 1, 1)
-    push_utils.lit(self.push, 1, 1, 3)
-    push_utils.lit(self.push, 4, 4, 64)
     local on_midi = function(m) self:on_click(m) end
     self.push.event = on_midi
+    self:set_tracks_view()
 end
 
 function display:on_click(m)
     local event = midi.to_msg(m)
     print("recv midi event " .. event.type)
+    if event.type == "note_on" then
+    print("val " .. event.note)  
+    end
     self.view:on_click(display, event)
-end
-
-function display:text(text)
-
 end
 
 function tracks_view:init(state)
     self.state = state
-    print("tracks view")
+    push_utils.clear_display(display.push)
+    push_utils.text(display.push, "Tracks", 1, 1)
+    push_utils.clear_notes(display.push)
+    for tid, t in ipairs(self.state.tracks) do
+      local x, y = push_utils.id_to_xy(tid)
+      push_utils.lit(display.push, x, y, 3)
+    end
     return self
 end
 
 function tracks_view:on_click(display, event)
     if event.type == "note_on" then
         local tid = push_utils.midi_note_to_track_id(event.note)
+        if display.state:track(tid) == nil then
+          tid = display.state:add_track()
+        end
         display:set_patterns_view(tid)
     end
 end
@@ -72,14 +76,20 @@ end
 function patterns_view:init(state, track_id)
     self.state = state
     self.track_id = track_id
-    print("patterns view for track: " .. self.track_id)
+    push_utils.clear_display(display.push)
+    push_utils.text(display.push, "Patterns for track: " .. self.track_id, 1, 1)
+    push_utils.clear_notes(display.push)
+    for pid, t in ipairs(self.state:track(self.track_id).patterns) do
+      local x, y = push_utils.id_to_xy(pid)
+      push_utils.lit(display.push, x, y, 3)
+    end
     return self
 end
 
 function patterns_view:on_click(display, event)
     if event.type == "note_on" then
         local pid = push_utils.midi_note_to_pattern_id(event.note)
-        if pid == nil then
+        if display.state:pattern(self.track_id, pid) == nil then
             pid = display.state:add_pattern(self.track_id)
         end
         display:set_notes_view(self.track_id, pid)
@@ -90,13 +100,20 @@ function notes_view:init(state, track_id, pattern_id)
     self.state = state
     self.track_id = track_id
     self.pattern_id = pattern_id
-    print("notes view for track: " .. self.track_id .. " and pattern: " .. self.pattern_id)
+    push_utils.clear_display(display.push)
+    push_utils.text(display.push, "Notes for pattern: " .. self.pattern_id .. " on track " .. self.track_id, 1, 1)
+    push_utils.clear_notes(display.push)
     return self
 end
 
 function notes_view:on_click(display, event)
     if event.type == "note_on" then
-        
+      for i, step in ipairs(self.state:pattern(self.track_id, self.pattern_id).notes) do
+        if(step.type ~= "off") then
+          local x, y = push_utils.id_to_xy(i)
+          push_utils.lit(display.push, x, y, step.note)
+        end
+      end
     end
 end
 

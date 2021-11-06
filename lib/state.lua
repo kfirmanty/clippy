@@ -11,15 +11,20 @@ function state:all_tracks()
     return self.tracks
 end
 
-function state:pattern(track_id)
+function state:track(track_id)
+  return self.tracks[track_id]
+end
+
+function state:pattern(track_id, pattern_id)
     local track = self.tracks[track_id]
-    return track.patterns[track.current_pattern]
+    return track.patterns[pattern_id or track.current_pattern]
 end
 
 function state:add_track()
     table.insert(self.tracks, {patterns = {},
                                 current_pattern = 1,
                                 type = "midi"})
+    return #self.tracks
 end
 
 function off_step()

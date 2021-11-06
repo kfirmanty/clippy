@@ -1,11 +1,25 @@
 local utils = {}
 
+function utils.id_to_xy(id)
+  local y = math.floor((id - 1) / 8) + 1
+  local x = (id - 1 % 8) + 1
+  return x, y
+end
+
+function utils.midi_note_to_xy(note)
+  local y = 8 - math.floor((note - 36) / 8)
+  local x = ((note - 36) % 8) + 1
+  return x, y
+end
+
 function utils.midi_note_to_track_id(note)
-    return 1 --FIXME
+    local x, y = utils.midi_note_to_xy(note)
+    return ((y - 1) * 8) + x
 end
 
 function utils.midi_note_to_pattern_id(note)
-    return 1 --FIXME
+  local x, y = utils.midi_note_to_xy(note)
+  return ((y - 1) * 8) + x
 end
 
 function utils.connect()
@@ -13,7 +27,6 @@ function utils.connect()
 end
 
 function utils.send_sysex(m, d)
-  print("sending sysex to push")
   m:send{0xf0}
   for i,v in ipairs(d) do
     m:send{d[i]}
@@ -24,6 +37,7 @@ end
 function utils.init_user_mode(m)
   utils.send_sysex(m, {71,127,21,98,0,1,1})
 end
+
 
 function utils.text(m, text, line, offset)
   local text_len = string.len(text)
@@ -41,18 +55,26 @@ function utils.clear_display(m)
 end
 
 local pad_notes = {
-  {56, 57, 58, 59, 60, 61, 62, 63},
-  {48, 49, 50, 51, 52, 53, 54, 55},
-  {40, 41, 42, 43, 44, 45, 46, 47},
-  {32, 33, 34, 35, 36, 37, 38, 39},
-  {24, 25, 26, 27, 28, 29, 30, 31},
-  {16, 17, 18, 19, 20, 21, 22, 23},
-  {8, 9, 10, 11, 12, 13, 14, 15},
-  {0, 1, 2, 3, 4, 5, 6, 7}
+  {92, 93, 94, 95, 96, 97, 98, 99},
+  {84, 85, 86, 87, 88, 89, 90, 91},
+  {76, 77, 78, 79, 80, 81, 82, 83},
+  {68, 69, 70, 71, 72, 73, 74, 75},
+  {60, 61, 62, 63, 64, 65, 66, 67},
+  {52, 53, 54, 55, 56, 57, 58, 59},
+  {44, 45, 46, 47, 48, 49, 50, 51},
+  {36, 37, 38, 39, 40, 41, 42, 43},
 }
 
 function utils.lit(m, x, y, v)
   m:note_on(pad_notes[y][x], v)
+end
+
+function utils.clear_notes(m)
+  for _, row in ipairs(pad_notes) do
+    for _, v in ipairs(row) do
+    m:note_off(v)
+    end
+  end
 end
 
 return utils
