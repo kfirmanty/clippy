@@ -34,6 +34,12 @@ function utils.text(m, text, line, offset)
   utils.send_sysex(m, msg)
 end
 
+function utils.clear_display(m)
+  for i = 0, 3 do
+    utils.send_sysex(m, {240,71,127,21, 28 + i,0,0,247})
+  end
+end
+
 local pad_notes = {
   {56, 57, 58, 59, 60, 61, 62, 63},
   {48, 49, 50, 51, 52, 53, 54, 55},
@@ -46,7 +52,7 @@ local pad_notes = {
 }
 
 function utils.lit(m, x, y, v)
-  m:note_on(pad_notes[x][y], v)
+  m:note_on(pad_notes[y][x], v)
 end
 
 return utils
