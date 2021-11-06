@@ -1,6 +1,6 @@
-local state = require("clippy/lib/state")
-local sequencer = require("clippy/lib/sequencer")
-local display = require("clippy/lib/display")
+local state = include("clippy/lib/state")
+local sequencer = include("clippy/lib/sequencer")
+local display = include("clippy/lib/display")
 
 engine.name = "PolyPerc"
 
