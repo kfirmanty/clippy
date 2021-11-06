@@ -20,14 +20,8 @@ sequencer:init(state)
 sequencer:tick()
 sequencer:tick()
 
-print("testing display")
 display:init(state)
-display:on_click({type = "note_on",
-                  note = 36})
-display:on_click({type = "note_on",
-                  note = 36})
-                
-                
+
 function init()
 
 end

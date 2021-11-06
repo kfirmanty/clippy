@@ -29,7 +29,7 @@ function off_step()
 end
 
 function state:add_pattern(track_id)
-    table.insert(self.tracks[track_id].patterns, {type = "melodic", 
+    table.insert(self.tracks[track_id].patterns, {type = "melodic",
                                                     notes = utils.repeatedly(off_step, 16),
                                                     length = 16})
     return #self.tracks[track_id].patterns

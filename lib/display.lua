@@ -37,6 +37,12 @@ function display:init(state)
     self.state = state
     self:set_tracks_view()
     self.push = push_utils.connect()
+    push_utils.init_user_mode(self.push)
+    push_utils.text(self.push, "Hello from Norns!", 1, 1)
+    push_utils.lit(self.push, 1, 1, 127)
+    push_utils.lit(self.push, 4, 4, 64)
+    local on_midi = function(m) self:on_click(m) end
+    self.push.event = on_midi
 end
 
 function display:on_click(m)
