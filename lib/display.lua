@@ -32,7 +32,9 @@ end
 
 function display:on_click(m)
     local event = midi.to_msg(m)
-    print("recv midi event " .. event.type)
+    if(event.type ~= "key_pressure") then
+      print("recv midi event " .. event.type)
+    end
     if event.type == "note_on" then
     print("val " .. event.note)  
     end
