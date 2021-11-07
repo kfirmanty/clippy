@@ -2,7 +2,7 @@ local utils = {}
 
 function utils.id_to_xy(id)
   local y = math.floor((id - 1) / 8) + 1
-  local x = (id - 1 % 8) + 1
+  local x = ((id - 1) % 8) + 1
   return x, y
 end
 
