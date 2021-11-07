@@ -23,10 +23,12 @@ function notes_view:draw_steps()
       for i, step in ipairs(self.state:pattern(self.track_id, self.pattern_id).notes) do
         local x, y = push_utils.id_to_xy(i)
         local color = nil
-        if(i == self.selected_step) then
+        if(step.type == "on" and i == self.selected_step) then
+          color = 29
+        elseif(i == self.selected_step) then
           color = 3
         elseif(step.type ~= "off") then
-          color = step.note
+          color = 30
         else
           color = 1
         end
@@ -62,10 +64,15 @@ function notes_view:on_click(display, event)
       if(y > 2) then
         print("clicked on keys")  
       else
-        print("clicked on sequencer steps")
+        local prev_selected = self.selected_step
         self.selected_step = x + ((y - 1) * 8)
-        self:draw_steps()
-        self:display_step_info()
+        if(prev_selected ~= self.selected_step) then
+          self:draw_steps()
+          self:display_step_info()
+        else
+          self.state:toggle_step(self.track_id, self.pattern_id, self.selected_step)
+          self:draw_steps()
+        end
       end
     end
 end

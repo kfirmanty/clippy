@@ -45,7 +45,7 @@ function state:step(track_id, pattern_id, step)
 end
 
 function state:current_step(track_id, tick)
-    local p =  self:pattern(track_id)
+    local p = self:pattern(track_id)
     local step = (tick % p.length) + 1
     return p.notes[step]
 end
@@ -55,7 +55,9 @@ function state:edit_step(track_id, pattern_id, step, k, v)
 end
 
 function state:toggle_step(track_id, pattern_id, step)
-    self:edit_step(track_id, pattern_id, step, "type", "on")
+    local step_data = self:step(track_id, pattern_id, step)
+    local new_type = step_data.type == "on" and "off" or "on"
+    self:edit_step(track_id, pattern_id, step, "type", new_type)
 end
 
 return state
