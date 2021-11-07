@@ -5,14 +5,17 @@ local notes_view = {
     track_id = nil,
     pattern_id = nil,
     push = nil,
-    selected_step = 1
+    selected_step = 1,
+    base_note = 36
 }
 
 function notes_view:draw_melodic()
+  local step = self.state:step(self.track_id, self.pattern_id, self.selected_step)
   local i = 1
   for y = 8,3,-1 do
     for x = 1,8 do
-      local color = i % 12 == 0 and 9 or 40
+      local color = (i - 1) % 12 == 0 and 9 or 40
+      if(i - 1 + self.base_note == step.note) then color = 29 end
       push_utils.lit(self.push, x, y, color) 
       i = i + 1
     end
@@ -61,13 +64,14 @@ end
 function notes_view:on_click(display, event)
     if event.type == "note_on" then
       local x,y = push_utils.midi_note_to_xy(event.note)
-      if(y > 2) then
+      if(y > 2 and y < 9) then
         print("clicked on keys")  
-      else
+      elseif (y < 3) then
         local prev_selected = self.selected_step
         self.selected_step = x + ((y - 1) * 8)
         if(prev_selected ~= self.selected_step) then
           self:draw_steps()
+          self:draw_melodic()
           self:display_step_info()
         else
           self.state:toggle_step(self.track_id, self.pattern_id, self.selected_step)

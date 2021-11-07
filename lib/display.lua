@@ -6,18 +6,35 @@ local tracks_view = include("clippy/lib/views/tracks")
 local display = {
     state = nil,
     view = nil,
-    push = nil
+    push = nil,
+    track_id = nil,
+    pattern_id = nil,
+    view_name = "tracks"
 }
 
+function display:back()
+  if self.view_name == "notes" then
+    self:set_patterns_view(self.track_id)  
+  elseif self.view_name == "patterns" then
+    self:set_tracks_view()
+  end
+end
+
 function display:set_tracks_view()
+    self.view_name = "tracks"
     self.view = tracks_view:init(self.state, self.push)
 end
 
 function display:set_patterns_view(track_id)
+    self.view_name = "patterns"
+    self.track_id = track_id
     self.view = patterns_view:init(self.state, self.push, track_id)
 end
 
 function display:set_notes_view(track_id, pattern_id)
+    self.view_name = "notes"
+    self.track_id = track_id
+    self.pattern_id = pattern_id
     self.view = notes_view:init(self.state, self.push, track_id, pattern_id)
 end
 
@@ -32,11 +49,18 @@ end
 
 function display:on_click(m)
     local event = midi.to_msg(m)
+    if event.type == "cc" and event.cc == 44 and event.val == 127 then
+      self:back()
+      return nil
+    end
+    
     if(event.type ~= "key_pressure") then
       print("recv midi event " .. event.type)
     end
     if event.type == "note_on" then
     print("val " .. event.note)  
+    elseif event.type == "cc" then
+      print("cc " .. event.cc .. " val " .. event.val)
     end
     self.view:on_click(display, event)
 end
