@@ -128,4 +128,12 @@ function utils.clear_steps(m)
     end
 end
 
+function utils.enc_to_inc(val)
+  if(val >= 64) then
+    return - 1
+  else 
+    return 1 
+  end
+end
+
 return utils

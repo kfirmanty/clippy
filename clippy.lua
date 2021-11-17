@@ -9,13 +9,13 @@ state:add_pattern(1)
 state:toggle_step(1, 1, 1)
 state:edit_step(1, 1, 1, "note", 48)
 state:edit_step(1, 1, 5, "note", 51)
-state:toggle_step(1, 1, 2)
+state:toggle_step(1, 1, 5)
 state:add_track()
 state:add_pattern(2)
 state:toggle_step(2, 1, 1)
 state:toggle_step(2, 1, 1)
 state:edit_step(2, 1, 1, "note", 48)
-state:toggle_step(2, 1, 2)
+state:toggle_step(2, 1, 9)
 state:edit_step(2, 1, 9, "note", 46)
 
 sequencer:init(state)
@@ -25,20 +25,17 @@ sequencer:init(state)
 display:init(state, sequencer)
 
 function init()
-
 end
 
 function redraw()
   screen.clear()
   screen.level(10)
-  screen.text("hello")
   screen.update()
 end
 
 function key(n,z)
-  redraw()
+  
 end
 
 function enc(n,d)
-  redraw()
 end

@@ -38,7 +38,10 @@ end
 function state:add_pattern(track_id)
     table.insert(self.tracks[track_id].patterns, {type = "melodic",
                                                     notes = utils.repeatedly(off_step, 16),
-                                                    length = 16})
+                                                    length = 16,
+                                                    ticks = 1,
+                                                    tick_countdown = 1
+    })
     return #self.tracks[track_id].patterns
 end
 
