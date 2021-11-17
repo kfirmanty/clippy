@@ -48,6 +48,12 @@ function notes_view:display_step_info()
     push_utils.text(self.push, "Note:", 3, 1)
     push_utils.text(self.push, step.note .. "  ", 4, 1)
   end
+  local pattern = self.state:pattern(self.track_id, self.pattern_id)
+  push_utils.text(self.push, "Length:", 3, 18)
+  push_utils.text(self.push, pattern.length .. "  ", 4, 18)
+  
+  push_utils.text(self.push, "Ticks:", 3, 35)
+  push_utils.text(self.push, pattern.ticks .. "  ", 4, 35)
 end
 
 function notes_view:init(state, push, track_id, pattern_id)
@@ -92,6 +98,7 @@ function notes_view:on_click(display, event)
       elseif(event.cc == 75) then
         pattern.ticks = math.max(1, pattern.ticks + inc)
       end
+      self:display_step_info()
     end
 end
 
