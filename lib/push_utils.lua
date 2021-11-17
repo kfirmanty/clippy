@@ -77,4 +77,55 @@ function utils.clear_notes(m)
   end
 end
 
+local step_cc = {
+  20, 21, 22, 23, 24, 25, 26, 27,
+  102, 103, 104, 105, 106, 107, 108, 109
+}
+
+local step_rows_color = {{
+  red_dim = 1,
+  red = 4,
+  green_dim = 19,
+  green = 22
+},
+  {
+  red_dim = 6,
+  red = 5,
+  green_dim = 22,
+  green = 122
+}
+}
+local function color_to_step_value(cc, color)
+  if cc >= 20 and cc <= 27 then
+    return step_rows_color[1][color]
+  elseif cc >= 102 and cc <= 109 then
+        return step_rows_color[2][color]
+  else
+    print("utils.color_to_step_value called with wrong cc value: " .. cc)
+    return -1
+  end
+end
+
+function utils.lit_step(m, x, color)
+  local cc = step_cc[x]
+  m:cc(cc, color_to_step_value(cc, color))
+end
+
+function utils.cc_to_step(cc)
+  if cc >= 20 and cc <= 27 then
+    return cc - 19
+  elseif cc >= 102 and cc <= 109 then
+    return cc - 93
+  else
+    print("utils.cc_to_step called with wrong cc value: " .. cc)
+    return -1
+  end
+end
+
+function utils.clear_steps(m)
+    for _, v in ipairs(step_cc) do
+    m:cc(v, 0)
+    end
+end
+
 return utils

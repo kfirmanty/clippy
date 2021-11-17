@@ -13,6 +13,7 @@ function patterns_view:init(state, push, track_id)
     push_utils.clear_display(self.push)
     push_utils.text(self.push, "Patterns for track: " .. self.track_id, 1, 1)
     push_utils.clear_notes(self.push)
+    push_utils.clear_steps(self.push)
     for pid, t in ipairs(self.state:track(self.track_id).patterns) do
       local x, y = push_utils.id_to_xy(pid)
       push_utils.lit(self.push, x, y, 3)

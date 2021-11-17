@@ -12,7 +12,7 @@ local notes_view = {
 function notes_view:draw_melodic()
   local step = self.state:step(self.track_id, self.pattern_id, self.selected_step)
   local i = 1
-  for y = 8,3,-1 do
+  for y = 8,1,-1 do
     for x = 1,8 do
       local color = (i - 1) % 12 == 0 and 9 or 40
       if(i - 1 + self.base_note == step.note) then color = 29 end -- note of selected step
@@ -24,18 +24,17 @@ end
 
 function notes_view:draw_steps()
       for i, step in ipairs(self.state:pattern(self.track_id, self.pattern_id).notes) do
-        local x, y = push_utils.id_to_xy(i)
         local color = nil
         if(step.type == "on" and i == self.selected_step) then
-          color = 29
+          color = "green"
         elseif(i == self.selected_step) then
-          color = 3
+          color = "red"
         elseif(step.type ~= "off") then
-          color = 30
+          color = "green_dim"
         else
-          color = 1
+          color = "red_dim"
         end
-        push_utils.lit(self.push, x, y, color)
+        push_utils.lit_step(self.push, i, color)
     end
 end
 
@@ -63,15 +62,13 @@ end
 
 function notes_view:on_click(display, event)
     if event.type == "note_on" then
-      local x,y = push_utils.midi_note_to_xy(event.note)
-      if(y > 2 and y < 9) then
         local note = event.note - push_utils.base_note + notes_view.base_note
         self.state:edit_step(self.track_id, self.pattern_id, self.selected_step, "note", note)
         self:draw_melodic()
         self:display_step_info()
-      elseif (y < 3) then
+    elseif (event.type == "cc" and event.val == 127) then
         local prev_selected = self.selected_step
-        self.selected_step = x + ((y - 1) * 8)
+        self.selected_step = push_utils.cc_to_step(event.cc)
         if(prev_selected ~= self.selected_step) then
           self:draw_steps()
           self:draw_melodic()
@@ -80,7 +77,6 @@ function notes_view:on_click(display, event)
           self.state:toggle_step(self.track_id, self.pattern_id, self.selected_step)
           self:draw_steps()
         end
-      end
     end
 end
 
