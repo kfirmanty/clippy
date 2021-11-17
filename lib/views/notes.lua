@@ -65,7 +65,10 @@ function notes_view:on_click(display, event)
     if event.type == "note_on" then
       local x,y = push_utils.midi_note_to_xy(event.note)
       if(y > 2 and y < 9) then
-        print("clicked on keys")  
+        local note = event.note - push_utils.base_note + notes_view.base_note
+        self.state:edit_step(self.track_id, self.pattern_id, self.selected_step, "note", note)
+        self:draw_melodic()
+        self:display_step_info()
       elseif (y < 3) then
         local prev_selected = self.selected_step
         self.selected_step = x + ((y - 1) * 8)

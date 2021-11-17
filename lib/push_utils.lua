@@ -1,4 +1,4 @@
-local utils = {}
+local utils = {base_note = 36}
 
 function utils.id_to_xy(id)
   local y = math.floor((id - 1) / 8) + 1

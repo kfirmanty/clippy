@@ -23,7 +23,7 @@ end
 function state:add_track()
     table.insert(self.tracks, {patterns = {},
                                 current_pattern = 1,
-                                type = "midi"})
+                                type = "engine"})
     return #self.tracks
 end
 

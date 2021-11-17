@@ -9,7 +9,10 @@ local display = {
     push = nil,
     track_id = nil,
     pattern_id = nil,
-    view_name = "tracks"
+    view_name = "tracks",
+    sequencer = nil,
+    is_playing = false,
+    clock_id = nil
 }
 
 function display:back()
@@ -38,8 +41,9 @@ function display:set_notes_view(track_id, pattern_id)
     self.view = notes_view:init(self.state, self.push, track_id, pattern_id)
 end
 
-function display:init(state)
+function display:init(state, sequencer)
     self.state = state
+    self.sequencer = sequencer
     self.push = push_utils.connect()
     push_utils.init_user_mode(self.push)
     local on_midi = function(m) self:on_click(m) end
@@ -47,14 +51,29 @@ function display:init(state)
     self:set_tracks_view()
 end
 
-function display:on_click(m)
-    local event = midi.to_msg(m)
-    if event.type == "cc" and event.cc == 44 and event.val == 127 then
-      self:back()
-      return nil
+local function is_button_press(event, cc)
+  return event.type == "cc" and event.cc == cc and event.val == 127
+end
+
+function display:tick_sequencer()
+  while true do
+      clock.sync(1/8)
+      self.sequencer:tick()
     end
-    
-    if(event.type ~= "key_pressure") then
+end
+
+function display:handle_start_button()
+  if(self.is_playing) then
+    self.is_playing = false
+    clock.cancel(self.clock_id)
+  else
+    self.is_playing = true
+    self.clock_id = clock.run(function() self:tick_sequencer() end)
+  end
+end
+
+local function print_debug_midi_info(event)
+  if(event.type ~= "key_pressure") then
       print("recv midi event " .. event.type)
     end
     if event.type == "note_on" then
@@ -62,6 +81,19 @@ function display:on_click(m)
     elseif event.type == "cc" then
       print("cc " .. event.cc .. " val " .. event.val)
     end
+end
+
+function display:on_click(m)
+    local event = midi.to_msg(m)
+    if is_button_press(event, 44) then
+      self:back()
+      return nil
+    elseif is_button_press(event, 85) then
+      self:handle_start_button()
+      return nil
+    end
+    
+    print_debug_midi_info(event)
     self.view:on_click(display, event)
 end
 
