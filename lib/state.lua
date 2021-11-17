@@ -40,7 +40,7 @@ function state:add_pattern(track_id)
                                                     notes = utils.repeatedly(off_step, 16),
                                                     length = 16,
                                                     ticks = 1,
-                                                    tick_countdown = 1
+                                                    tick_countdown = 0
     })
     return #self.tracks[track_id].patterns
 end
@@ -51,7 +51,7 @@ end
 
 function state:current_step(track_id, tick)
     local p = self:pattern(track_id)
-    local step = (tick % p.length) + 1
+    local step = math.floor((tick / p.ticks) % p.length) + 1
     return p.notes[step]
 end
 
