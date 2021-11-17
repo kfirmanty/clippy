@@ -24,7 +24,9 @@ function state:add_track()
     table.insert(self.tracks, {patterns = {},
                                 current_pattern = 1,
                                 type = "engine"})
-    return #self.tracks
+    local tid = #self.tracks
+    self:add_pattern(tid)
+    return tid
 end
 
 function off_step()

@@ -15,7 +15,7 @@ function notes_view:draw_melodic()
   for y = 8,3,-1 do
     for x = 1,8 do
       local color = (i - 1) % 12 == 0 and 9 or 40
-      if(i - 1 + self.base_note == step.note) then color = 29 end
+      if(i - 1 + self.base_note == step.note) then color = 29 end -- note of selected step
       push_utils.lit(self.push, x, y, color) 
       i = i + 1
     end
