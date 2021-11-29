@@ -12,8 +12,6 @@ state:edit_step(1, 1, 5, "note", 51)
 state:toggle_step(1, 1, 5)
 
 sequencer:init(state)
---sequencer:tick()
---sequencer:tick()
 
 display:init(state, sequencer)
 

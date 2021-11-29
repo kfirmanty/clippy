@@ -17,6 +17,12 @@ function utils.midi_note_to_xy(note)
   return x, y
 end
 
+function utils.midi_note_to_tid_pid(note)
+  local tid = (note - utils.base_note) % 8 + 1
+  local pid = 8 - math.floor((note - utils.base_note) / 8)
+  return tid, pid
+end
+
 function utils.midi_note_to_track_id(note)
     local x, y = utils.midi_note_to_xy(note)
     return ((y - 1) * 8) + x
