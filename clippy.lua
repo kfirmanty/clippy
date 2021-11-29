@@ -4,8 +4,11 @@ local display = include("clippy/lib/display")
 
 engine.name = "PolyPerc"
 
-state:add_track()
-state:add_pattern(1)
+for i = 1,4 do
+  state:add_track()
+  state:add_pattern(i)
+end
+
 state:toggle_step(1, 1, 1)
 state:edit_step(1, 1, 1, "note", 48)
 state:edit_step(1, 1, 5, "note", 51)

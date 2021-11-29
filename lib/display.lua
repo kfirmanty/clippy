@@ -7,7 +7,6 @@ local display = {
     state = nil,
     view = nil,
     push = nil,
-    track_id = nil,
     pattern_id = nil,
     view_name = "tracks",
     sequencer = nil,
@@ -17,9 +16,7 @@ local display = {
 
 function display:back()
   if self.view_name == "notes" then
-    self:set_patterns_view(self.track_id)  
-  elseif self.view_name == "patterns" then
-    self:set_tracks_view()
+    self:set_patterns_view()  
   end
 end
 
@@ -28,15 +25,13 @@ function display:set_tracks_view()
     self.view = tracks_view:init(self.state, self.push)
 end
 
-function display:set_patterns_view(track_id)
+function display:set_patterns_view()
     self.view_name = "patterns"
-    self.track_id = track_id
     self.view = patterns_view:init(self.state, self.push, track_id)
 end
 
 function display:set_notes_view(track_id, pattern_id)
     self.view_name = "notes"
-    self.track_id = track_id
     self.pattern_id = pattern_id
     self.view = notes_view:init(self.state, self.push, track_id, pattern_id)
 end
@@ -48,7 +43,7 @@ function display:init(state, sequencer)
     push_utils.init_user_mode(self.push)
     local on_midi = function(m) self:on_click(m) end
     self.push.event = on_midi
-    self:set_tracks_view()
+    self:set_patterns_view()
 end
 
 function display:tick_sequencer()

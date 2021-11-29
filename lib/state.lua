@@ -18,7 +18,9 @@ end
 
 function state:pattern(track_id, pattern_id)
     local track = self.tracks[track_id]
-    return track.patterns[pattern_id or track.current_pattern]
+    if track then
+      return track.patterns[pattern_id or track.current_pattern]
+    end
 end
 
 function state:add_track()

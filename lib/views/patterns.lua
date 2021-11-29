@@ -11,7 +11,7 @@ function patterns_view:draw_patterns()
     local track = self.state:track(tid)
     if track ~= nil then
       for pid, p in ipairs(track.patterns) do
-        local color = track.current_pattern == pid and push_utils.pad_colors.LIGHT_GREEN or push_utils.pad_colors.WHITE
+        local color = track.current_pattern == pid and push_utils.pad_colors.LIGHT_GREEN or tid * 2
         push_utils.lit(self.push, tid, pid, color)
       end
     end
@@ -33,6 +33,9 @@ function patterns_view:on_click(display, event)
     if event.type == "note_on" then
         local tid, pid = push_utils.midi_note_to_tid_pid(event.note)
         if self.edit_pattern_on_press then
+          if display.state:track(tid) == nil then
+            tid = display.state:add_track()
+          end
           if display.state:pattern(tid, pid) == nil then
               pid = display.state:add_pattern(tid)
           end
