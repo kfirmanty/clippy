@@ -70,8 +70,18 @@ local pad_notes = {
   {36, 37, 38, 39, 40, 41, 42, 43},
 }
 
-function utils.lit(m, x, y, v)
-  m:note_on(pad_notes[y][x], v)
+utils.pad_colors = {
+  BLACK = 0,
+  DARK_GRAY = 1,
+  LIGHT_GRAY = 2,
+  WHITE = 3,
+  ORANGE = 9,
+  LIGHT_GREEN = 29,
+  LIGHT_BLUE = 40
+}
+
+function utils.lit(m, x, y, color)
+  m:note_on(pad_notes[y][x], utils.pad_colors[color] or color)
 end
 
 function utils.clear_notes(m)

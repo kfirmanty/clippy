@@ -14,7 +14,7 @@ function tracks_view:init(state, push)
     push_utils.clear_steps(self.push)
     for tid, t in ipairs(self.state.tracks) do
       local x, y = push_utils.id_to_xy(tid)
-      push_utils.lit(self.push, x, y, 3)
+      push_utils.lit(self.push, x, y, push_utils.pad_colors.WHITE)
     end
     return self
 end

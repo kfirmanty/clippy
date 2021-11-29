@@ -14,8 +14,8 @@ function melodic_view:redraw()
   local i = 1
   for y = 8,1,-1 do
     for x = 1,8 do
-      local color = (i - 1) % 12 == 0 and 9 or 40
-      if(i - 1 + self.base_note == step.note) then color = 29 end -- note of selected step
+      local color = (i - 1) % 12 == 0 and push_utils.pad_colors.ORANGE or push_utils.pad_colors.LIGHT_BLUE
+      if(i - 1 + self.base_note == step.note) then color = push_utils.pad_colors.LIGHT_GREEN end -- note of selected step
       push_utils.lit(self.push, x, y, color) 
       i = i + 1
     end
