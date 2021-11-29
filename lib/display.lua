@@ -51,10 +51,6 @@ function display:init(state, sequencer)
     self:set_tracks_view()
 end
 
-local function is_button_press(event, cc)
-  return event.type == "cc" and event.cc == cc and event.val == 127
-end
-
 function display:tick_sequencer()
   while true do
       clock.sync(1/8)
@@ -66,9 +62,11 @@ function display:handle_start_button()
   if(self.is_playing) then
     self.is_playing = false
     clock.cancel(self.clock_id)
+        push_utils.unlit_button(self.push, push_utils.buttons.PLAY)
   else
     self.is_playing = true
     self.clock_id = clock.run(function() self:tick_sequencer() end)
+    push_utils.lit_button(self.push, push_utils.buttons.PLAY)
   end
 end
 
@@ -85,10 +83,10 @@ end
 
 function display:on_click(m)
     local event = midi.to_msg(m)
-    if is_button_press(event, 44) then
+    if push_utils.is_button_press(event, push_utils.buttons.LEFT_ARROW) then
       self:back()
       return nil
-    elseif is_button_press(event, 85) then
+    elseif push_utils.is_button_press(event, push_utils.buttons.PLAY) then
       self:handle_start_button()
       return nil
     end

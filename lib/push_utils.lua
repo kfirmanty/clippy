@@ -1,5 +1,10 @@
 local utils = {base_note = 36}
 
+utils.buttons = {LEFT_ARROW = 44,
+                PLAY = 85,
+                RECORD = 86
+}
+
 function utils.id_to_xy(id)
   local y = math.floor((id - 1) / 8) + 1
   local x = ((id - 1) % 8) + 1
@@ -111,6 +116,14 @@ function utils.lit_step(m, x, color)
   m:cc(cc, color_to_step_value(cc, color))
 end
 
+function utils.lit_button(m, cc)
+  m:cc(cc, 127)
+end
+
+function utils.unlit_button(m, cc)
+  m:cc(cc, 0)
+end
+
 function utils.cc_to_step(cc)
   if cc >= 20 and cc <= 27 then
     return cc - 19
@@ -134,6 +147,18 @@ function utils.enc_to_inc(val)
   else 
     return 1 
   end
+end
+
+function utils.is_button_event(event, cc)
+  return event.type == "cc" and event.cc == cc
+end
+
+function utils.is_button_press(event, cc)
+  return utils.is_button_event(event, cc) and event.val == 127
+end
+
+function utils.is_button_release(event, cc)
+    return utils.is_button_event(event, cc) and event.val == 0
 end
 
 return utils

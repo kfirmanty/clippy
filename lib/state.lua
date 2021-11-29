@@ -66,6 +66,10 @@ function state:toggle_step(track_id, pattern_id, step)
     self:edit_step(track_id, pattern_id, step, "type", new_type)
 end
 
+function state:set_track_pattern(track_id, pattern_id)
+  self.tracks[track_id].current_pattern = pattern_id
+end
+
 local function play_engine(note)
   if(engine.name == "PolyPerc") then
     engine.hz(music_util.note_num_to_freq(note))

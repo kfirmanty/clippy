@@ -3,7 +3,8 @@ local push_utils = include("clippy/lib/push_utils")
 local patterns_view = {
     state = nil,
     track_id = nil,
-    push = nil
+    push = nil,
+    edit_pattern_on_press = false
 }
 
 function patterns_view:init(state, push, track_id)
@@ -24,10 +25,21 @@ end
 function patterns_view:on_click(display, event)
     if event.type == "note_on" then
         local pid = push_utils.midi_note_to_pattern_id(event.note)
-        if display.state:pattern(self.track_id, pid) == nil then
-            pid = display.state:add_pattern(self.track_id)
+        if self.edit_pattern_on_press then
+          if display.state:pattern(self.track_id, pid) == nil then
+              pid = display.state:add_pattern(self.track_id)
+          end
+          display:set_notes_view(self.track_id, pid)
+        elseif display.state:pattern(self.track_id, pid) ~= nil then
+          self.state:set_track_pattern(self.track_id, pid)
         end
-        display:set_notes_view(self.track_id, pid)
+    elseif push_utils.is_button_press(event, push_utils.buttons.RECORD) then
+      self.edit_pattern_on_press = not self.edit_pattern_on_press
+      if self.edit_pattern_on_press then
+        push_utils.lit_button(self.push, push_utils.buttons.RECORD)
+      else
+        push_utils.unlit_button(self.push, push_utils.buttons.RECORD)
+      end
     end
 end
 
