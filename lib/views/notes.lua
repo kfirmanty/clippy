@@ -67,4 +67,8 @@ function notes_view:on_click(display, event)
     end
 end
 
+function notes_view:on_tick()
+  self.steps_view:on_tick()
+end
+
 return notes_view

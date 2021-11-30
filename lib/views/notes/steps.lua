@@ -16,7 +16,9 @@ function steps_view:draw_steps()
           break
         end
         local color = nil
-        if(step.type == "on" and i == self.selected_step) then
+        if(i == pattern.step) then
+          color = "yellow"
+        elseif(step.type == "on" and i == self.selected_step) then
           color = "green"
         elseif(i == self.selected_step) then
           color = "red"
@@ -51,6 +53,10 @@ function steps_view:on_click(display, event)
           self:draw_steps()
         end
     end
+end
+
+function steps_view:on_tick()
+  self:draw_steps()
 end
 
 return steps_view

@@ -106,6 +106,7 @@ local step_cc = {
 local step_rows_color = {{
   red_dim = 1,
   red = 4,
+  yellow = 16,
   green_dim = 19,
   green = 22
 },
@@ -113,8 +114,8 @@ local step_rows_color = {{
   red_dim = 6,
   red = 5,
   green_dim = 22,
-  green = 122
-}
+  yellow = 12,
+  green = 122}
 }
 local function color_to_step_value(cc, color)
   if cc >= 20 and cc <= 27 then

@@ -50,6 +50,9 @@ function display:tick_sequencer()
   while true do
       clock.sync(1/8)
       self.sequencer:tick()
+      if(self.view.on_tick) then
+        self.view:on_tick()
+      end
     end
 end
 
